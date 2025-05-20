@@ -5,8 +5,18 @@
 
 class Anfitrion
 {
+private:
+    int documento;
+    int antiguedad;
+    float puntuacion;
+    int* codigosAlojamientos;
+    int cantidadAlojamientos;
 public:
     Anfitrion();
+    void agregarAlojamiento();
+    void consultarReservasActivas();
+    void actualizarHistorico();
+
 };
 
 #endif // ANFITRION_H
