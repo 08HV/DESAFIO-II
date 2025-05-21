@@ -13,6 +13,8 @@ private:
     int cantidadAlojamientos;
 public:
     Anfitrion();
+    void cargarDesdeArchivo();
+    void guardarEnArchivo();
     void agregarAlojamiento();
     void consultarReservasActivas();
     void actualizarHistorico();

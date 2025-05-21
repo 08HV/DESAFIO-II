@@ -5,8 +5,20 @@
 
 class Huesped
 {
+private:
+    int documento;
+    int antiguedad;
+    float puntuacion;
+    int* codigosReservas;
+    int cantidadReservas;
 public:
     Huesped();
+    void cargarDesdeArchivo();
+    void guardarEnArchivo();
+    bool reservarAlojamiento();
+    bool anularReservacion();
+    void agregarCodigoReserva(int codigoNuevo);
+    bool tieneReservaEnFechas();
 };
 
 #endif // HUESPED_H

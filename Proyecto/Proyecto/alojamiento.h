@@ -21,6 +21,8 @@ private:
     int cantidadReservasFutu;
 public:
     Alojamiento();
+    void cargarDesdeArchivo();
+    void guardarEnArchivo();
     void estaDispo ();
     void AgregarReserva();
     void mostrar();

@@ -17,6 +17,8 @@ private:
     char anotaciones[1000];
 public:
     Reservacion();
+    void cargarDesdeArchivo();
+    void guardarEnArchivo();
     bool estaActiva();
     void mostrarComprobante();
     bool secruza();
