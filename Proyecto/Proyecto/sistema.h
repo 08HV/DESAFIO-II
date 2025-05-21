@@ -1,5 +1,6 @@
 #ifndef SISTEMA_H
 #define SISTEMA_H
+#include "Alojamiento.h"
 
 #include <QtCore/qglobal.h>
 
@@ -8,6 +9,7 @@ class Sistema
 private:
     Alojamiento** alojamientos;
     int cantidadAlojamientos;
+    int capacidadAlojamientos;
 
     Reservacion** reservaciones;
     int cantidadReservaciones;
@@ -20,7 +22,9 @@ private:
 
 public:
     Sistema();
+    ~Sistema();
 
+    void cargarAlojamientos(const char* archivo);
     void cargarDatos();
     void guardarDatos();
     bool Ingreso();
@@ -28,10 +32,10 @@ public:
 
     Huesped* buscarHuesped();
     Anfitrion* buscarAnfitrion();
-    Alojamiento* buscarAlojamiento();
+    Alojamiento* buscarAlojamiento(int codigo) const;
     Reservacion* buscarReservacion();
 
-    void buscarAlojamientosDisponibles();
+    void buscarAlojamientosDisponibles(const Fecha& inicio, int noches, const char* municipio, int costoMax, float puntuacionMin)const;
     bool registrarReservacion();
     bool anularReservacion();
     void consultarReservasAnfitrion();
