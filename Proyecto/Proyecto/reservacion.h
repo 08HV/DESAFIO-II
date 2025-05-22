@@ -1,27 +1,62 @@
 #ifndef RESERVACION_H
 #define RESERVACION_H
 
-#include <QtCore/qglobal.h>
+#include "Fecha.h"
+#include "Alojamiento.h"
+#include "Huesped.h"
+#include "string"
+#include <algorithm>
 
+using namespace std;
 class Reservacion
 {
 private:
-    char fecha[32];
+    Fecha fechaEntrada;
     int duracion;
     int codigoReserva;
-    int codigoAlojamiento; // Relación con Alojamiento
-    int docHuesped; // Relación con Huesped
-    char metodoPago[20];
-    char fechaPago[32];
+    Alojamiento* alojamiento; // Relación con Alojamiento
+    Huesped* huesped; // Relación con Huesped
+    string metodoPago;
+    Fecha fechaPago;
     float monto;
-    char anotaciones[1000];
+    char* anotaciones;
 public:
     Reservacion();
-    void cargarDesdeArchivo();
-    void guardarEnArchivo();
-    bool estaActiva();
-    void mostrarComprobante();
-    bool secruza();
+    Reservacion(int codigoReserva, Alojamiento* alojamiento, Huesped* huesped,
+    const Fecha& fechaEntrada, int duracion, const string& metodoPago,
+    const Fecha& fechaPago, float monto, const char* anotaciones);
+    Reservacion(const Reservacion& copia);
+    Reservacion& operator=(const Reservacion& copia);
+
+    ~Reservacion();
+
+    // Get
+    int getCodigoReserva() const;
+    int getCodigoAlojamiento() const; // retorna alojamiento->getCodigoID()
+    int getDocHuesped() const;        // retorna huesped->getDocumento()
+    Alojamiento* getAlojamiento() const;
+    Huesped* getHuesped() const;
+    const Fecha& getFechaEntrada() const;
+    int getDuracion() const;
+    float getMonto() const;
+    const string& getMetodoPago() const;
+    const char* getAnotaciones() const;
+    const Fecha& getFechaPago() const;
+    // Set
+    void setCodigoReserva(int codigo);
+    void setAlojamiento(Alojamiento* alojamiento);
+    void setHuesped(Huesped* huesped);
+    void setFechaEntrada(const Fecha& fecha);
+    void setDuracion(int duracion);
+    void setMetodoPago(const string& metodo);
+    void setFechaPago(const Fecha& fecha);
+    void setMonto(float monto);
+    void setAnotaciones(const char* anotaciones);
+
+    bool estaActiva(const Fecha& fechaActual) const;
+    void mostrarComprobante()const;
+    bool secruza(const Fecha& inicio, int noches) const;
+    Fecha getFechaFin() const;
 };
 
 #endif // RESERVACION_H

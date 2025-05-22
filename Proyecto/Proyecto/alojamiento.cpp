@@ -1,52 +1,47 @@
 #include "alojamiento.h"
 #include <cstring>
 #include <iostream>
+#include <iostream>
 
 using namespace std;
 Alojamiento(){
-    nombre = nullptr;
+    nombre = "";
     codigoID = 0;
     anfitrion = nullptr;
-    departamento = nullptr;
-    municipio = nullptr;
-    tipo = nullptr;
-    direccion = nullptr;
+    departamento = "";
+    municipio = "";
+    tipo = "";
+    direccion = "";
     precio = 0;
     for (int i = 0; i < 10; ++i) {
-        amenidades[i][0] = '\0';
+        amenidades[i] = "";
     }
     for (int i = 0; i < 365; ++i) {
         reservasFuturas[i] = '\0';
     }
     cantidadReservasFutu = 0;
 }
-Alojamiento::Alojamiento(const char* nombre, int codigoID, Anfitrion* anfitrion, const char* departamento, const char* municipio, const char* tipo, const char* direccion, int precio, char amenidades[10][25])
+Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrion, const string& departamento, const string& municipio, const string& tipo, const string& direccion, int precio, string amenidades[10])
     {
     this->codigoID = codigoID;
 
-    // Atributos dinámicos
-    this->nombre = new char[strlen(nombre) + 1];
-    strcpy(this->nombre, nombre);
+    this->nombre = nombre;
 
     this->anfitrion = anfitrion;
 
-    this->departamento = new char[strlen(departamento) + 1];
-    strcpy(this->departamento, departamento);
+    this->nombre = nombre;
 
-    this->municipio = new char[strlen(municipio) + 1];
-    strcpy(this->municipio, municipio);
+    this->municipio = municipio;
 
-    this->tipo = new char[strlen(tipo) + 1];
-    strcpy(this->tipo, tipo);
+    this->tipo = tipo;
 
-    this->direccion = new char[strlen(direccion) + 1];
-    strcpy(this->direccion, direccion);
+    this->direccion = direccion;
 
     this->precio = precio;
 
     // atributo estático
     for (int i = 0; i < 10; i++) {
-        strcpy(this->amenidades[i], amenidades[i]);
+        this->amenidades[i], amenidades[i];
     }
     // Inicialización de reservas futuras
     for (int i = 0; i < 365; i++) {
@@ -54,41 +49,35 @@ Alojamiento::Alojamiento(const char* nombre, int codigoID, Anfitrion* anfitrion,
     }
     cantidadReservasFutu = 0;
 }
-    Alojamiento::~Alojamiento() {
-        delete[] nombre;
-        delete[] departamento;
-        delete[] municipio;
-        delete[] tipo;
-        delete[] direccion;
-    }
     // Get
     int Alojamiento::getCodigoID() const {
         return codigoID;
     }
-    const char* Alojamiento::getNombre() const {
+    const string& Alojamiento::getNombre() const {
         return nombre;
     }
     Anfitrion* Alojamiento::getAnfitrion() const {
         return anfitrion;
     }
-    const char* Alojamiento::getDepartamento() const {
+    const string& Alojamiento::getDepartamento() const {
         return departamento;
     }
-    const char* Alojamiento::getMunicipio() const {
+    const string& Alojamiento::getMunicipio() const {
         return municipio;
     }
-    const char* Alojamiento::getTipo() const {
+    const string& Alojamiento::getTipo() const {
         return tipo;
     }
-    const char* Alojamiento::getDireccion() const {
+    const string& Alojamiento::getDireccion() const {
         return direccion;
     }
     int Alojamiento::getPrecio() const {
         return precio;
     }
-    const char* Alojamiento::getAmenidad(int i) const {
+    const string& Alojamiento::getAmenidad(int i) const {
         if (i >= 0 && i < 10) return amenidades[i];
-        return nullptr;
+        static const string empty = "";
+        return empty;
     }
     int Alojamiento::getCantidadReservasFutu() const {
         return cantidadReservasFutu;
@@ -99,43 +88,32 @@ Alojamiento::Alojamiento(const char* nombre, int codigoID, Anfitrion* anfitrion,
     }
 
     // Set
-    void Alojamiento::setNombre(const char* nombre) {
-        delete[] this->nombre;
-        this->nombre = new char[strlen(nombre) + 1];
-        strcpy(this->nombre, nombre);
+    void Alojamiento::setNombre(const string& nombre) {
+        this->nombre = nombre;
     }
     void Alojamiento::setAnfitrion(Anfitrion* anfitrion) {
         this->anfitrion = anfitrion;
     }
-    void Alojamiento::setDepartamento(const char* departamento) {
-        delete[] this->departamento;
-        this->departamento = new char[strlen(departamento) + 1];
-        strcpy(this->departamento, departamento);
+    void Alojamiento::setDepartamento(const string& departamento) {
+        this->departamento = departamento;
     }
-    void Alojamiento::setMunicipio(const char* municipio) {
-        delete[] this->municipio;
-        this->municipio = new char[strlen(municipio) + 1];
-        strcpy(this->municipio, municipio);
+    void Alojamiento::setMunicipio(const string& municipio) {
+        this->municipio = municipio;
     }
-    void Alojamiento::setTipo(const char* tipo) {
-        delete[] this->tipo;
-        this->tipo = new char[strlen(tipo) + 1];
-        strcpy(this->tipo, tipo);
+    void Alojamiento::setTipo(const string& tipo) {
+        this->tipo = tipo;
     }
-    void Alojamiento::setDireccion(const char* direccion) {
-        delete[] this->direccion;
-        this->direccion = new char[strlen(direccion) + 1];
-        strcpy(this->direccion, direccion);
+    void Alojamiento::setDireccion(const string& direccion) {
+        this->direccion = direccion;
     }
     void Alojamiento::setPrecio(int precio) {
         this->precio = precio;
     }
 
     // Set para atributos estáticos
-    void Alojamiento::setAmenidad(int i, const char* amenidad) {
+    void Alojamiento::setAmenidad(int i, const string& amenidad) {
         if (i >= 0 && i < 10) {
-            strncpy(this->amenidades[i], amenidad, 24);
-            this->amenidades[i][24] = '\0';
+            this->amenidades[i] = amenidad;
         }
     }
 
@@ -156,10 +134,12 @@ Alojamiento::Alojamiento(const char* nombre, int codigoID, Anfitrion* anfitrion,
         cout << "Direccion: " << direccion << endl;
         cout << "Precio por noche: $" << precio << endl;
         cout << "Amenidades: ";
+        bool eso=true;
         for (int i = 0; i < 10; i++) {
-            if (amenidades[i][0] != '\0') {
+            if (!amenidades[i].empty()) {
+                if (!first) cout << ", ";
                 cout << amenidades[i];
-                if (i < 9 && amenidades[i + 1][0] != '\0') cout << ", ";
+                first = false;
             }
         }
         cout << endl;
