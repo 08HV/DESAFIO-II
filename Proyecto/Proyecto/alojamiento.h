@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "Anfitrion.h"
+#include "Fecha.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ private:
     string direccion;
     int precio;
     string amenidades[10];
-    char reservasFuturas[365];
+    Fecha reservasFuturas[365];
     int cantidadReservasFutu;
 public:
     Alojamiento();
@@ -34,7 +35,7 @@ public:
     int getPrecio() const;
     const string& getAmenidad(int i) const;
     int getCantidadReservasFutu() const;
-    const char* getReservaFutura(int i) const;
+    const Fecha& getReservaFutura(int i) const;
 
     void setNombre(const string& nombre);
     void setAnfitrion(Anfitrion* anfitrion);
@@ -45,8 +46,8 @@ public:
     void setPrecio(int precio);
     void setAmenidad(int i, const string& amenidad);
 
-    void agregarReservaFutura(char reserva);
-    void estaDisponible(const char* fechaInicio, const char* fechaFin) const;
+    void agregarReservaFutura(const Fecha& fechaReserva);
+    void estaDisponible(const Fecha& inicio, int noches) const;
     void mostrarInfo()const;
 
 };

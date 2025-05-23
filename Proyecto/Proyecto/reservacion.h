@@ -27,13 +27,12 @@ public:
     const Fecha& fechaPago, float monto, const char* anotaciones);
     Reservacion(const Reservacion& copia);
     Reservacion& operator=(const Reservacion& copia);
-
     ~Reservacion();
 
     // Get
     int getCodigoReserva() const;
-    int getCodigoAlojamiento() const; // retorna alojamiento->getCodigoID()
-    int getDocHuesped() const;        // retorna huesped->getDocumento()
+    int getCodigoAlojamiento() const;
+    int getDocHuesped() const;
     Alojamiento* getAlojamiento() const;
     Huesped* getHuesped() const;
     const Fecha& getFechaEntrada() const;

@@ -2,19 +2,22 @@
 #define SISTEMA_H
 #include "Alojamiento.h"
 #include "Reservacion.h"
-
-#include <QtCore/qglobal.h>
+#include "Fecha.h"
+#include "Anfitrion.h"
+#include "Huesped.h"
+#include <string>
 
 class Sistema
 {
 private:
     Alojamiento** alojamientos;
     int cantidadAlojamientos;
-    int capacidadAlojamientos;
+
 
     Reservacion** reservaciones;
     int cantidadReservaciones;
     int capacidadReservaciones;
+    int ultimoCodigoReserva;
 
     Anfitrion** anfitriones;
     int cantidadAnfitriones;
@@ -27,30 +30,31 @@ public:
     ~Sistema();
 
     void cargarAlojamientos(const char* archivo);
+    void cargarAnfitriones(const char* archivo);
+    void cargarHuespedes(const char* archivo);
     void cargarDatos();
     void guardarDatos();
     bool Ingreso();
     void menuPrincipal();
-
-    Huesped* buscarHuesped();
-    Anfitrion* buscarAnfitrion();
+    Huesped* buscarHuesped(int documento) const;
+    Anfitrion* buscarAnfitrion(int documento) const;
     Alojamiento* buscarAlojamiento(int codigo) const;
     Reservacion* buscarReservacion(int codigo) const;
 
-    void buscarAlojamientosDisponibles(const Fecha& inicio, int noches, const char* municipio, int costoMax, float puntuacionMin)const;
+    void buscarAlojamientosDisponibles(const Fecha& inicio, int noches, const string& municipio, int costoMax, float puntuacionMin)const;
     bool registrarReservacion();
     bool anularReservacion();
-    void consultarReservasAnfitrion();
+    void consultarReservacionesAnfitrion(Anfitrion* anfitrion, const Fecha& desde, const Fecha& hasta) const;
 
     int generarCodigoReserva();
 
     bool huespedTieneReservaEnRango(Huesped* huesped, const Fecha& inicio, int noches) const;
-    bool alojamientoDisponible(Alojamiento* alojamiento, const Fecha& inicio, int noches) const;
+    bool alojamientoDisponible(Alojamiento* a, const Fecha& inicio, int noches) const;
 
     void agregarReservacion(Reservacion* reservacion);
 
     // Actualizar histórico (VI)
-    void actualizarHistorico();
+    void actualizarHistorico(const Fecha& fechaCorte);
 
     // Funcionalidad (VII)
     void mostrarRecursos();

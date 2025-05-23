@@ -1,5 +1,7 @@
-#include "reservacion.h"
+#include "Reservacion.h"
 #include "iostream"
+#include <cstring>
+#include <algorithm>
 
 Reservacion::Reservacion() {
     fechaEntrada = Fecha();
@@ -109,7 +111,7 @@ void Reservacion::setFechaEntrada(const Fecha& fecha) {
 void Reservacion::setDuracion(int d) {
     duracion = d;
 }
-void Reservacion::setMetodoPago(const std::string& metodo) {
+void Reservacion::setMetodoPago(const string& metodo) {
     metodoPago = metodo;
 }
 void Reservacion::setFechaPago(const Fecha& fecha) {
@@ -121,7 +123,7 @@ void Reservacion::setMonto(float m) {
 void Reservacion::setAnotaciones(const char* anota) {
     delete[] anotaciones;
     if (anota) {
-        size_t len = std::min(strlen(anota), size_t(1000));
+        size_t len = min(strlen(anota), size_t(1000));
         anotaciones = new char[len + 1];
         strncpy(anotaciones, anota, len);
         anotaciones[len] = '\0';
@@ -144,19 +146,19 @@ Fecha Reservacion::getFechaFin() const {
 
 // Muestra comprobante de la reserva
 void Reservacion::mostrarComprobante() const {
-    std::cout << "----- Comprobante de Reservacion -----\n";
-    std::cout << "Codigo de reserva: " << codigoReserva << "\n";
+    cout << "----- Comprobante de Reservacion -----\n";
+    cout << "Codigo de reserva: " << codigoReserva << "\n";
     if (huesped)
-        std::cout << "Nombre huesped: " << huesped->getNombre() << "\n";
+        cout << "Nombre huesped: " << huesped->getNombre() << "\n";
     if (alojamiento)
-        std::cout << "Codigo alojamiento: " << alojamiento->getCodigoID() << "\n";
-    std::cout << "Fecha de inicio: ";
+        cout << "Codigo alojamiento: " << alojamiento->getCodigoID() << "\n";
+    cout << "Fecha de inicio: ";
     fechaEntrada.mostrarFecha(); // Debe mostrar en formato "nombreDía, día de nombreMes del año"
-    std::cout << "\n";
-    std::cout << "Fecha de fin: ";
+    cout << "\n";
+    cout << "Fecha de fin: ";
     getFechaFin().mostrarFecha();
-    std::cout << "\n";
-    std::cout << "--------------------------------------\n";
+    cout << "\n";
+    cout << "--------------------------------------\n";
 }
 
 bool Reservacion::secruza(const Fecha& inicio, int noches) const {

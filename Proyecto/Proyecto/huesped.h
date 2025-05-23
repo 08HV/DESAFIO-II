@@ -1,7 +1,7 @@
 #ifndef HUESPED_H
 #define HUESPED_H
-
-#include <QtCore/qglobal.h>
+#include <string>
+using namespace std;
 
 class Huesped
 {
@@ -9,16 +9,19 @@ private:
     int documento;
     int antiguedad;
     float puntuacion;
-    int* codigosReservas;
-    int cantidadReservas;
 public:
     Huesped();
-    void cargarDesdeArchivo();
-    void guardarEnArchivo();
-    bool reservarAlojamiento();
-    bool anularReservacion();
-    void agregarCodigoReserva(int codigoNuevo);
-    bool tieneReservaEnFechas();
+    Huesped(int documento, int antiguedad, float puntuacion);
+    //get
+    int getDocumento() const;
+    int getAntiguedad() const;
+    float getPuntuacion() const;
+    //set
+    void setDocumento(int doc);
+    void setAntiguedad(int ant);
+    void setPuntuacion(float punt);
+
+    void mostrarInfo() const;
 };
 
 #endif // HUESPED_H
