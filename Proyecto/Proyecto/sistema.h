@@ -10,6 +10,9 @@
 class Sistema
 {
 private:
+    static const int HUESPEDES = 100;
+    static const int ANFITRIONES = 100;
+    static const int ALOJAMIENTOS = 100;
     Alojamiento** alojamientos;
     int cantidadAlojamientos;
 

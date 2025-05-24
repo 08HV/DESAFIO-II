@@ -5,6 +5,9 @@
 #include <fstream>
 #include <string>
 using namespace std;
+const int HUESPEDES = 100;
+const int MANFITRIONES = 100;
+const int ALOJAMIENTOS = 100;
 
 bool iguales(const string& a, const string& b) {
     if (a.length() != b.length()) return false;
@@ -18,37 +21,63 @@ bool iguales(const string& a, const string& b) {
 
 Sistema::Sistema() {
     cantidadAlojamientos = 0;
-    alojamientos = nullptr;
+    alojamientos = new Alojamiento*[ALOJAMIENTOS];
+    for (int i = 0; i < ALOJAMIENTOS; ++i)
+        alojamientos[i] = nullptr;
 
     capacidadReservaciones = 100;
     cantidadReservaciones = 0;
     reservaciones = new Reservacion*[capacidadReservaciones];
+    for (int i = 0; i < capacidadReservaciones; ++i)
+        reservaciones[i] = nullptr;
     ultimoCodigoReserva = 1000;
 
-    anfitriones = nullptr;
+    anfitriones = new Anfitrion*[ANFITRIONES];
+    for (int i = 0; i < ANFITRIONES; ++i)
+        anfitriones[i] = nullptr;
     cantidadAnfitriones = 0;
 
     cantidadHuespedes = 0;
-    huespedes = nullptr;
+    huespedes = new Huesped*[HUESPEDES];
+     for (int i = 0; i < HUESPEDES; ++i)
+        huespedes[i] = nullptr;
 }
 Sistema::~Sistema() {
     for (int i = 0; i < cantidadAlojamientos; i++) {
-        delete alojamientos[i];
+        if (alojamientos[i] != nullptr){
+            delete alojamientos[i];
+            alojamientos[i] = nullptr;
+        }
     }
     delete[] alojamientos;
+    alojamientos = nullptr;
 
     for (int i = 0; i < cantidadReservaciones; i++) {
-        delete reservaciones[i];
+        if (reservaciones[i] != nullptr) {
+            delete reservaciones[i];
+            reservaciones[i] = nullptr;
+        }
     }
     delete[] reservaciones;
+    reservaciones = nullptr;
+
     for (int i = 0; i < cantidadAnfitriones; i++) {
-        delete anfitriones[i];
-    }
+        if (anfitriones[i] != nullptr) {
+            delete anfitriones[i];
+            anfitriones[i] = nullptr;
+        }
+    }  
     delete[] anfitriones;
+    anfitriones = nullptr;
+
     for (int i = 0; i < cantidadHuespedes; i++) {
-        delete huespedes[i];
+        if (huespedes[i] != nullptr) {
+            delete huespedes[i];
+            huespedes[i] = nullptr;
+        }
     }
     delete[] huespedes;
+    huespedes = nullptr;
 }
 
 string extraerCampo(const string& linea, size_t& posicion) {
@@ -139,6 +168,10 @@ void Sistema::cargarHuespedes(const char* archivo) {
         }
         huespedes[cantidadHuespedes++] = huesped;
     }
+    cout << "Cantidad de huespedes cargados: " << cantidadHuespedes << endl;
+    for(int i = 0; i < cantidadHuespedes; ++i) {
+        cout << "Huesped cargado: " << huespedes[i]->getDocumento() << ", antigüedad: " << huespedes[i]->getAntiguedad() << ", puntuación: " << huespedes[i]->getPuntuacion() << endl;
+    }
 }
 
 void Sistema::cargarReservacion(const char* archivo) {
@@ -216,6 +249,12 @@ bool Sistema::Ingreso() {
     int tipo;
     cout << "Seleccione tipo de usuario:\n 1) Huésped\n 2) Anfitrión\nOpción: ";
     cin >> tipo;
+
+    if (tipo != 1 && tipo != 2) {
+        cout << "Opción inválida.\n";
+        return false;
+    }
+
     cout << "Ingrese su número de documento: ";
     cin >> doc;
     if (tipo == 1) {

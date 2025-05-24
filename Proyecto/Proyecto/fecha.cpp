@@ -66,6 +66,23 @@ void Fecha::sumarDias(int dias) {
     }
 }
 
+void Fecha::mostrarFechaBonita(ostream& salida) const {
+    // Día de la semana (Zeller's congruence)
+    static const string dias[] = { "sábado", "domingo", "lunes", "martes", "miércoles", "jueves", "viernes" };
+    static const string nombres[] = {
+        "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+        "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    };
+    int d = dia, m = mes, a = año;
+    if (m < 3) { m += 12; a--; }
+    int k = a % 100;
+    int j = a / 100;
+    int f = d + 13 * (m + 1) / 5 + k + k / 4 + j / 4 + 5 * j;
+    int diaSemana = f % 7; // 0=sábado, 1=domingo, ..., 6=viernes
+
+    salida << dias[diaSemana] << ", " << dia << " de " << nombres[mes-1] << " del " << año;
+}
+
 void Fecha::mostrarFecha(ostream& salida) const {
     if (dia < 10) salida << '0';
     salida << dia << '/';

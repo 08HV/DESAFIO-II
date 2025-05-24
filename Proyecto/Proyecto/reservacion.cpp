@@ -153,10 +153,10 @@ void Reservacion::mostrarComprobante() const {
     if (alojamiento)
         cout << "Codigo alojamiento: " << alojamiento->getCodigoID() << "\n";
     cout << "Fecha de inicio: ";
-    fechaEntrada.mostrarFecha(); // Debe mostrar en formato "nombreDía, día de nombreMes del año"
+    fechaEntrada.mostrarFechaBonita(cout); // Debe mostrar en formato "nombreDía, día de nombreMes del año"
     cout << "\n";
     cout << "Fecha de fin: ";
-    getFechaFin().mostrarFecha();
+    getFechaFin().mostrarFechaBonita(cout);
     cout << "\n";
     cout << "--------------------------------------\n";
 }

@@ -33,6 +33,7 @@ public:
     static int diasEnMes(int mes, int año);
     static Fecha fechaDeCorte();
     void ingresarFecha();
+    void mostrarFechaBonita(ostream& salida = cout) const;
     void mostrarFecha(ostream& salida = cout) const;
     friend ostream& operator<<(ostream& out, const Fecha& f);
 };
