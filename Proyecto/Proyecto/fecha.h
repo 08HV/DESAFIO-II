@@ -34,6 +34,7 @@ public:
     static Fecha fechaDeCorte();
     void ingresarFecha();
     void mostrarFecha(ostream& salida = cout) const;
+    friend ostream& operator<<(ostream& out, const Fecha& f);
 };
 
 #endif // FECHA_H

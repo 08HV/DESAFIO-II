@@ -149,7 +149,7 @@ void Reservacion::mostrarComprobante() const {
     cout << "----- Comprobante de Reservacion -----\n";
     cout << "Codigo de reserva: " << codigoReserva << "\n";
     if (huesped)
-        cout << "Nombre huesped: " << huesped->getNombre() << "\n";
+        cout << "Documento huesped: " << huesped->getDocumento() << "\n";
     if (alojamiento)
         cout << "Codigo alojamiento: " << alojamiento->getCodigoID() << "\n";
     cout << "Fecha de inicio: ";

@@ -140,4 +140,10 @@ void Fecha::ingresarFecha() {
     }
 }
 
-
+ostream& operator<<(ostream& out, const Fecha& f) {
+    if (f.getDia() < 10) out << '0';
+    out << f.getDia() << '/';
+    if (f.getMes() < 10) out << '0';
+    out << f.getMes() << '/' << f.getAño();
+    return out;
+}

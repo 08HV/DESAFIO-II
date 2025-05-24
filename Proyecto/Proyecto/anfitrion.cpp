@@ -82,6 +82,23 @@ void Anfitrion::setAntiguedad(int anti) {
 void Anfitrion::setPuntuacion(float punt) {
     puntuacion = punt;
 }
+void Anfitrion::agregarCodigoAlojamiento(int codigo) {
+    if (capacidadAlojamientos == 0) {
+        capacidadAlojamientos = 1;
+        codigosAlojamientos = new int[capacidadAlojamientos];
+    }
+    if (cantidadAlojamientos == capacidadAlojamientos) {
+        int nuevaCapacidad = capacidadAlojamientos * 2;
+        int* nuevoArr = new int[nuevaCapacidad];
+        for (int i = 0; i < cantidadAlojamientos; ++i)
+            nuevoArr[i] = codigosAlojamientos[i];
+        delete[] codigosAlojamientos;
+        codigosAlojamientos = nuevoArr;
+        capacidadAlojamientos = nuevaCapacidad;
+    }
+    codigosAlojamientos[cantidadAlojamientos++] = codigo;
+}
+
 void Anfitrion::mostrarInfo(ostream& salida) const {
 salida << "Documento: " << documento << "\n"
        << "Antigüedad: " << antiguedad << " meses\n"

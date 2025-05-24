@@ -27,12 +27,14 @@ public:
 
     const string& getNombre() const;
     int getCodigoID() const;
+    int getCodigo() const;
     Anfitrion* getAnfitrion() const;
     const string& getDepartamento() const;
     const string& getMunicipio() const;
     const string& getTipo() const;
     const string& getDireccion() const;
     int getPrecio() const;
+    int getCostoPorNoche() const;
     const string& getAmenidad(int i) const;
     int getCantidadReservasFutu() const;
     const Fecha& getReservaFutura(int i) const;
@@ -46,9 +48,12 @@ public:
     void setPrecio(int precio);
     void setAmenidad(int i, const string& amenidad);
 
+
+
+    bool esDelMunicipio(const string& municipio) const;
     void agregarReservaFutura(const Fecha& fechaReserva);
-    void estaDisponible(const Fecha& inicio, int noches) const;
-    void mostrarInfo()const;
+    bool estaDisponible(const Fecha& inicio, int noches) const;
+    void mostrarInfo(ostream& salida = cout)const;
 
 };
 

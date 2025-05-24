@@ -30,6 +30,8 @@ public:
     void setAntiguedad(int ant);
     void setPuntuacion(float punt);
 
+    void agregarCodigoAlojamiento(int codigo);
+
     void mostrarInfo(ostream& salida = cout) const;
 
     friend ostream& operator<<(ostream& salida, const Anfitrion& a);

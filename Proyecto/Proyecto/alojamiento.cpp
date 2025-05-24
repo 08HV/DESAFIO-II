@@ -26,7 +26,7 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
 
     this->anfitrion = anfitrion;
 
-    this->nombre = nombre;
+    this->departamento = departamento;
 
     this->municipio = municipio;
 
@@ -36,7 +36,6 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
 
     this->precio = precio;
 
-    // atributo estático
     for (int i = 0; i < 10; i++) {
         this->amenidades[i] = amenidades[i];
     }
@@ -44,6 +43,9 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
 }
     // Get
     int Alojamiento::getCodigoID() const {
+        return codigoID;
+    }
+    int Alojamiento::getCodigo() const {
         return codigoID;
     }
     const string& Alojamiento::getNombre() const {
@@ -65,6 +67,9 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
         return direccion;
     }
     int Alojamiento::getPrecio() const {
+        return precio;
+    }
+    int Alojamiento::getCostoPorNoche() const {
         return precio;
     }
     const string& Alojamiento::getAmenidad(int i) const {
@@ -108,16 +113,17 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
             this->amenidades[i] = amenidad;
         }
     }
+bool Alojamiento::esDelMunicipio(const string& mun) const {
+        return municipio == mun;
+}
 
- // Agrega una reservacion a futuro
 void Alojamiento::agregarReservaFutura(const Fecha& fechaReserva) {
     if (cantidadReservasFutu < 365) {
         reservasFuturas[cantidadReservasFutu++] = fechaReserva;
     }
 }
 
-// Muestra la información completa del alojamiento
-void Alojamiento::mostrarInfo() const {
+void Alojamiento::mostrarInfo(ostream& salida ) const {
     cout << "Nombre: " << nombre << endl;
     cout << "Codigo: " << codigoID << endl;
     cout << "Departamento: " << departamento << endl;
@@ -126,32 +132,32 @@ void Alojamiento::mostrarInfo() const {
     cout << "Direccion: " << direccion << endl;
     cout << "Precio por noche: $" << precio << endl;
     cout << "Amenidades: ";
-    bool eso=true;
+    bool primero=true;
     for (int i = 0; i < 10; i++) {
         if (!amenidades[i].empty()) {
-            if (!eso) cout << ", ";
-            cout << amenidades[i];
-            eso = false;
+            if (!primero) salida << ", ";
+            salida << amenidades[i];
+            primero = false;
         }
     }
-    cout << endl;
-    cout << "Cantidad de reservas futuras: " << cantidadReservasFutu << endl;
+    salida << endl;
+    salida << "Cantidad de reservas futuras: " << cantidadReservasFutu << endl;
     if (cantidadReservasFutu > 0) {
-        cout << "Fechas reservadas: ";
+        salida << "Fechas reservadas: ";
         for (int i = 0; i < cantidadReservasFutu; ++i) {
-            reservasFuturas[i].mostrarFecha(cout);
-            if (i != cantidadReservasFutu - 1) cout << ", ";
+            reservasFuturas[i].mostrarFecha(salida);
+            if (i != cantidadReservasFutu - 1) salida << ", ";
         }
-        cout << endl;
+        salida << endl;
     }
 }
 
-bool Alojamiento::estaDisponible(const Fecha& nicio, int noches) const {
+bool Alojamiento::estaDisponible(const Fecha& inicio, int noches) const {
     Fecha dia = inicio;
     for (int n = 0; n < noches; ++n) {
         for (int r = 0; r < cantidadReservasFutu; ++r) {
             if (reservasFuturas[r] == dia) {
-                return false; // Día ya reservado
+                return false;
             }
         }
         dia.sumarDias(1);

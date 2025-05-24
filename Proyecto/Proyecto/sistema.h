@@ -32,20 +32,23 @@ public:
     void cargarAlojamientos(const char* archivo);
     void cargarAnfitriones(const char* archivo);
     void cargarHuespedes(const char* archivo);
+    void cargarReservacion(const char* archivo);
     void cargarDatos();
     void guardarDatos();
     bool Ingreso();
-    void menuPrincipal();
+    void menuPrincipalAnfitrion(Anfitrion* a);
+    void menuPrincipalHuesped(Huesped* h);
     Huesped* buscarHuesped(int documento) const;
     Anfitrion* buscarAnfitrion(int documento) const;
     Alojamiento* buscarAlojamiento(int codigo) const;
     Reservacion* buscarReservacion(int codigo) const;
-
+    void guardarReservas(const char* archivo);
     void buscarAlojamientosDisponibles(const Fecha& inicio, int noches, const string& municipio, int costoMax, float puntuacionMin)const;
-    bool registrarReservacion();
-    bool anularReservacion();
+    bool registrarReservacionPorCodigo(Huesped* huesped, int codigoAlojamiento, Fecha fechaEntrada, int noches);
+    bool registrarReservacionPorBusqueda(Huesped* huesped);
+    void anularReservacion();
     void consultarReservacionesAnfitrion(Anfitrion* anfitrion, const Fecha& desde, const Fecha& hasta) const;
-
+    void mostrarReservasDeHuesped(Huesped* h) const;
     int generarCodigoReserva();
 
     bool huespedTieneReservaEnRango(Huesped* huesped, const Fecha& inicio, int noches) const;
