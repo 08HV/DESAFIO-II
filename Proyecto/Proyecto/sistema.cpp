@@ -140,7 +140,7 @@ void Sistema::cargarAnfitriones(const char* archivo) {
         while (posicion < linea.size()) {
             string campo = extraerCampo(linea, posicion);
             if (!campo.empty())
-                anfitrion->agregarCodigoAlojamiento(stoi(campo)); // Debes tener este método
+                anfitrion->agregarCodigoAlojamiento(stoi(campo));
         }
         anfitriones[cantidadAnfitriones++] = anfitrion;
     }
@@ -164,13 +164,9 @@ void Sistema::cargarHuespedes(const char* archivo) {
         while (posicion < linea.size()) {
             string campo = extraerCampo(linea, posicion);
             if (!campo.empty())
-                huesped->agregarCodigoReserva(stoi(campo)); // Debes tener este método
+                huesped->agregarCodigoReserva(stoi(campo));
         }
         huespedes[cantidadHuespedes++] = huesped;
-    }
-    cout << "Cantidad de huespedes cargados: " << cantidadHuespedes << endl;
-    for(int i = 0; i < cantidadHuespedes; ++i) {
-        cout << "Huesped cargado: " << huespedes[i]->getDocumento() << ", antigüedad: " << huespedes[i]->getAntiguedad() << ", puntuación: " << huespedes[i]->getPuntuacion() << endl;
     }
 }
 
@@ -199,14 +195,23 @@ void Sistema::cargarReservacion(const char* archivo) {
         string anotaciones = extraerCampo(linea, posicion);
 
 
+        cout << "Leyendo reserva: "
+             << "CodigoReserva=" << codigoReserva
+             << ", Alojamiento=" << codigoAlojamiento
+             << ", Huesped=" << documentoHuesped << endl;
         Alojamiento* alojamiento = buscarAlojamiento(codigoAlojamiento);
         Huesped* huesped = buscarHuesped(documentoHuesped);
+        if (alojamiento == nullptr || huesped == nullptr){
+            cerr<<"Error, reservacion no carga: codigo " <<codigoReserva;
+            cerr<<"alojamiento o huesped no encontrado\n";
+            continue;
+        }
         Fecha fechaEntrada(diaEntrada, mesEntrada, añoEntrada);
         Fecha fechaPago(diaPago, mesPago, añoPago);
 
         reservaciones[cantidadReservaciones++] = new Reservacion(
             codigoReserva, alojamiento, huesped, fechaEntrada, duracion, metodoPago, fechaPago, monto, anotaciones.c_str()
-            );
+        );
     }
 }
 void Sistema::guardarReservas(const char* archivo) {
@@ -217,6 +222,17 @@ void Sistema::guardarReservas(const char* archivo) {
     }
     for (int i = 0; i < cantidadReservaciones; ++i) {
         Reservacion* r = reservaciones[i];
+
+        if (r == nullptr) {
+            cout << "[ERROR] reservaciones[" << i << "] es nullptr. No se guarda.\n";
+            continue;
+        }
+
+        if (r->getAlojamiento() == nullptr || r->getHuesped() == nullptr) {
+            cout << "[ERROR] Reservación " << r->getCodigoReserva() << " tiene alojamiento o huésped nulo.\n";
+            continue;
+        }
+
         out << r->getCodigoReserva() << ":"
             << r->getAlojamiento()->getCodigoID() << ":"
             << r->getHuesped()->getDocumento() << ":"
@@ -235,8 +251,8 @@ void Sistema::guardarReservas(const char* archivo) {
 }
 void Sistema::cargarDatos() {
     cargarAnfitriones("ANFITRIONES.txt");
-    cargarHuespedes("HUESPEDES.txt");
     cargarAlojamientos("ALOJAMIENTOS.txt");
+    cargarHuespedes("HUESPEDES.txt");
     cargarReservacion("RESERVAS.txt");
 }
 
@@ -495,10 +511,10 @@ bool Sistema::registrarReservacionPorCodigo(Huesped* huesped, int codigoAlojamie
     cout << "Fecha de pago:\n";
     fechaPago.ingresarFecha();
     float monto = alojamiento->getPrecio() * noches;
-    char anotaciones[1001];
+    char anotaciones[1000];
     cout << "¿Desea agregar anotaciones para el anfitrión? (Máx 1000 caracteres, vacío para omitir):\n";
     cin.ignore();
-    cin.getline(anotaciones, 1001);
+    cin.getline(anotaciones, 1000);
 
     int codigoReserva = generarCodigoReserva();
     Reservacion* reserva = new Reservacion(
