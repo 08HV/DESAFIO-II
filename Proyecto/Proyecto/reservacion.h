@@ -18,13 +18,13 @@ private:
     Huesped* huesped; // Relación con Huesped
     string metodoPago;
     Fecha fechaPago;
-    float monto;
+    unsigned int monto;
     char* anotaciones;
 public:
     Reservacion();
     Reservacion(int codigoReserva, Alojamiento* alojamiento, Huesped* huesped,
     const Fecha& fechaEntrada, int duracion, const string& metodoPago,
-    const Fecha& fechaPago, float monto, const char* anotaciones);
+    const Fecha& fechaPago,unsigned int monto, const char* anotaciones);
     Reservacion(const Reservacion& copia);
     Reservacion& operator=(const Reservacion& copia);
     ~Reservacion();
@@ -37,7 +37,7 @@ public:
     Huesped* getHuesped() const;
     const Fecha& getFechaEntrada() const;
     int getDuracion() const;
-    float getMonto() const;
+    unsigned int getMonto() const;
     const string& getMetodoPago() const;
     const char* getAnotaciones() const;
     const Fecha& getFechaPago() const;
@@ -49,7 +49,7 @@ public:
     void setDuracion(int duracion);
     void setMetodoPago(const string& metodo);
     void setFechaPago(const Fecha& fecha);
-    void setMonto(float monto);
+    void setMonto(unsigned int monto);
     void setAnotaciones(const char* anotaciones);
 
     bool estaActiva(const Fecha& fechaActual) const;

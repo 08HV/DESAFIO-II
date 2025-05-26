@@ -164,3 +164,5 @@ ostream& operator<<(ostream& out, const Fecha& f) {
     out << f.getMes() << '/' << f.getAño();
     return out;
 }
+
+

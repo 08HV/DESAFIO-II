@@ -31,6 +31,7 @@ Sistema::Sistema() {
     for (int i = 0; i < capacidadReservaciones; ++i)
         reservaciones[i] = nullptr;
     ultimoCodigoReserva = 0;
+    void gestionarFechaCorte();
 
     anfitriones = new Anfitrion*[ANFITRIONES];
     for (int i = 0; i < ANFITRIONES; ++i)
@@ -191,16 +192,12 @@ void Sistema::cargarReservacion(const char* archivo) {
         int diaPago = stoi(extraerCampo(linea, posicion));
         int mesPago = stoi(extraerCampo(linea, posicion));
         int añoPago = stoi(extraerCampo(linea, posicion));
-        float monto = stof(extraerCampo(linea, posicion));
+        unsigned int monto = stof(extraerCampo(linea, posicion));
         string anotaciones = extraerCampo(linea, posicion);
 
         if (codigoReserva > ultimoCodigoReserva) {
             ultimoCodigoReserva = codigoReserva;
         }
-        cout << "Leyendo reserva: "
-             << "CodigoReserva=" << codigoReserva
-             << ", Alojamiento=" << codigoAlojamiento
-             << ", Huesped=" << documentoHuesped << endl;
         Alojamiento* alojamiento = buscarAlojamiento(codigoAlojamiento);
         Huesped* huesped = buscarHuesped(documentoHuesped);
         if (alojamiento == nullptr || huesped == nullptr){
@@ -252,10 +249,12 @@ void Sistema::guardarReservas(const char* archivo) {
     out.close();
 }
 void Sistema::cargarDatos() {
+    gestionarFechaCorte();
     cargarAnfitriones("ANFITRIONES.txt");
     cargarAlojamientos("ALOJAMIENTOS.txt");
     cargarHuespedes("HUESPEDES.txt");
     cargarReservacion("RESERVAS.txt");
+
 }
 
 void Sistema::guardarDatos() {
@@ -320,7 +319,7 @@ void Sistema::menuPrincipalAnfitrion(Anfitrion* a) {
         cout << "2. Consultar reservaciones activas por rango de fecha\n";
         cout << "3. Anular una reservación\n";
         cout << "4. Actualizar histórico de reservaciones\n";
-        cout << "5. Cerrar sesión\n";
+        cout << "5. Cerrar sesión para guardar cambios\n";
         cin >> opcion;
 
         if (opcion == 1) {
@@ -371,7 +370,7 @@ void Sistema::menuPrincipalHuesped(Huesped* h) {
         cout << "2. Buscar y reservar alojamiento (por filtros)\n";
         cout << "3. Buscar alojamiento por código y reservar\n";
         cout << "4. Anular reservación\n";
-        cout << "5. Cerrar sesión\n";
+        cout << "5. Cerrar sesión para guardar reserva\n";
         cin >> opcion;
 
         if (opcion == 1) {
@@ -390,7 +389,11 @@ void Sistema::menuPrincipalHuesped(Huesped* h) {
             fechaEntrada.ingresarFecha();
             cout << "Cantidad de noches: ";
             cin >> noches;
+            if (!fechaValida(fechaEntrada)) {
+                cout << "La fecha de entrada no es valida, no tenemos reservas habilitadas.\n";
+            }else{
             registrarReservacionPorCodigo(h, codigoAloj, fechaEntrada, noches);
+            }
         }
         else if (opcion == 4) {
             anularReservacion();
@@ -512,9 +515,9 @@ bool Sistema::registrarReservacionPorCodigo(Huesped* huesped, int codigoAlojamie
     Fecha fechaPago;
     cout << "Fecha de pago:\n";
     fechaPago.ingresarFecha();
-    float monto = alojamiento->getPrecio() * noches;
+    unsigned int monto = alojamiento->getPrecio() * noches;
     char anotaciones[1000];
-    cout << "¿Desea agregar anotaciones para el anfitrión? (Máx 1000 caracteres, vacío para omitir):\n";
+    cout << "¿Desea agregar anotaciones para el anfitrión? (Máx 1000 caracteres, enter para omitir):\n";
     cin.ignore();
     cin.getline(anotaciones, 1000);
 
@@ -540,7 +543,7 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
     string municipio;
     Fecha fechaEntrada;
     int noches;
-    float costoMax = -1;
+    int costoMax = -1;
     float puntuacionMin = -1;
 
     cout << "Municipio: ";
@@ -549,95 +552,95 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
     fechaEntrada.ingresarFecha();
     cout << "Cantidad de noches: ";
     cin >> noches;
+    if (!fechaValida(fechaEntrada)) {
+        cout << "La fecha de entrada no es valida, no tenemos reservas habilitadas.\n";
+    }else{
+        string respu;
+        while (true) {
+            cout << "¿Desea filtrar por costo máximo por noche? (si/no): ";
+            cin >> respu;
+            for (auto &c : respu) c = tolower(c);
 
-
-    string respu;
-    while (true) {
-        cout << "¿Desea filtrar por costo máximo por noche? (si/no): ";
-        cin >> respu;
-        for (auto &c : respu) c = tolower(c);
-
-        if (respu == "si") {
-            cout << "Costo máximo por noche: ";
-            cin >> costoMax;
-            break;
-        } else if (respu == "no") {
-            break;
-        } else {
-            cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
+            if (respu == "si") {
+                cout << "Costo máximo por noche: ";
+                cin >> costoMax;
+                break;
+            } else if (respu == "no") {
+                break;
+            } else {
+                cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
+            }
         }
-    }
-    while (true) {
-        cout << "¿Desea filtrar por puntuación mínima de anfitrión? (si/no): ";
-        cin >> respu;
-        for (auto &c : respu) c = tolower(c);
+        while (true) {
+            cout << "¿Desea filtrar por puntuación mínima de anfitrión? (si/no): ";
+            cin >> respu;
+            for (auto &c : respu) c = tolower(c);
 
-        if (respu == "si") {
-            cout << "Puntuación mínima: ";
-            cin >> puntuacionMin;
-            break;
-        } else if (respu == "no") {
-            // No se filtra, simplemente sale del ciclo
-            break;
-        } else {
-            cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
+            if (respu == "si") {
+                cout << "Puntuación mínima: ";
+                cin >> puntuacionMin;
+                break;
+            } else if (respu == "no") {
+
+                break;
+            } else {
+                cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
+            }
         }
-    }
 
-    const int resultados = 100;
-    Alojamiento* disponibles[resultados];
-    int totalDisponibles = 0;
+        const int resultados = 100;
+        Alojamiento* disponibles[resultados];
+        int totalDisponibles = 0;
 
-    for (int i = 0; i < cantidadAlojamientos; ++i) {
-        if (alojamientos[i]->esDelMunicipio(municipio) &&
-            alojamientos[i]->estaDisponible(fechaEntrada, noches) &&
-            (costoMax < 0 || alojamientos[i]->getCostoPorNoche() <= costoMax) &&
-            (puntuacionMin < 0 || alojamientos[i]->getAnfitrion()->getPuntuacion() >= puntuacionMin)) {
-            disponibles[totalDisponibles++] = alojamientos[i];
+        for (int i = 0; i < cantidadAlojamientos; ++i) {
+            if (alojamientos[i]->esDelMunicipio(municipio) &&
+                alojamientos[i]->estaDisponible(fechaEntrada, noches) &&
+                (costoMax < 0 || alojamientos[i]->getCostoPorNoche() <= costoMax) &&
+                (puntuacionMin < 0 || alojamientos[i]->getAnfitrion()->getPuntuacion() >= puntuacionMin)) {
+                disponibles[totalDisponibles++] = alojamientos[i];
+            }
         }
-    }
-    if (totalDisponibles == 0) {
-        cout << "No hay alojamientos disponibles con esos criterios.\n";
-        return false;
-    }
-    cout << "\nAlojamientos disponibles:\n";
-    for (int i = 0; i < totalDisponibles; ++i) {
-        cout << "Código: " << disponibles[i]->getCodigo() << endl;
-        disponibles[i]->mostrarInfo();
-        cout << "----------------------\n";
-    }
-    while (true) {
-        cout << "¿Desea registrar una reservación? (si/no): ";
-        cin >> respu;
-
-        for (auto &c : respu) c = tolower(c);
-
-        if (respu == "si") {
-            break;
-        } else if (respu == "no") {
-            // Cancela la operación
+        if (totalDisponibles == 0) {
+            cout << "No hay alojamientos disponibles con esos criterios.\n";
             return false;
-        } else {
-            cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
         }
-    }
-    int codigoAlojamiento;
-    cout << "Ingrese el código del alojamiento a reservar: ";
-    cin >> codigoAlojamiento;
-    bool encontrado = false;
-    for (int i = 0; i < totalDisponibles; ++i) {
-        if (disponibles[i]->getCodigo() == codigoAlojamiento) {
-            encontrado = true;
-            break;
+        cout << "\nAlojamientos disponibles:\n";
+        for (int i = 0; i < totalDisponibles; ++i) {
+            cout << "Código: " << disponibles[i]->getCodigo() << endl;
+            disponibles[i]->mostrarInfo();
+            cout << "----------------------\n";
         }
-    }
-    if (!encontrado) {
-        cout << "Código de alojamiento inválido.\n";
-        return false;
-    }
-    return registrarReservacionPorCodigo(huesped, codigoAlojamiento, fechaEntrada, noches);
-}
+        while (true) {
+            cout << "¿Desea registrar una reservación? (si/no): ";
+            cin >> respu;
 
+            for (auto &c : respu) c = tolower(c);
+
+            if (respu == "si") {
+                break;
+            } else if (respu == "no") {
+                return false;
+            } else {
+                cout << "Respuesta inválida. Por favor escriba 'si' o 'no'.\n";
+            }
+        }
+        int codigoAlojamiento;
+        cout << "Ingrese el código del alojamiento a reservar: ";
+        cin >> codigoAlojamiento;
+        bool encontrado = false;
+        for (int i = 0; i < totalDisponibles; ++i) {
+            if (disponibles[i]->getCodigo() == codigoAlojamiento) {
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            cout << "Código de alojamiento inválido.\n";
+            return false;
+        }
+        return registrarReservacionPorCodigo(huesped, codigoAlojamiento, fechaEntrada, noches);
+    }
+}
 void Sistema::anularReservacion() {
     int codigo;
     cout << "Ingrese el código de la reservación a anular: ";
@@ -712,7 +715,8 @@ bool reservacionAntesDeCorte(const Reservacion* r, const Fecha& fechaCorte) {
 }
 
 void Sistema::actualizarHistorico(const Fecha& fechaCorte) {
-    ofstream historico("historico_reservas.txt", ios::app); // Puedes cambiar el nombre del archivo
+    fechaCorteActual = fechaCorte;
+    ofstream historico("historico_reservas.txt", ios::app);
 
     int nuevoCount = 0;
     for (int i = 0; i < cantidadReservaciones; ++i) {
@@ -734,9 +738,25 @@ void Sistema::actualizarHistorico(const Fecha& fechaCorte) {
     }
     cantidadReservaciones = nuevoCount;
     historico.close();
+    ofstream out("fechacorte.txt");
+    if (out)
+        out << fechaCorteActual.getDia() << ' '
+            << fechaCorteActual.getMes() << ' '
+            << fechaCorteActual.getAño();
     cout << "Reservaciones anteriores al ";
     fechaCorte.mostrarFecha(cout);
     cout << " movidas al histórico.\n";
 }
+void Sistema::gestionarFechaCorte() {
+    ifstream in("fechacorte.txt");
+    int d, m, a;
+    if (in >> d >> m >> a) {
+        fechaCorteActual.setFecha(d, m, a);
+    }
+}
 
-
+bool Sistema::fechaValida(const Fecha& f) const {
+    Fecha limiteSuperior = fechaCorteActual;
+    limiteSuperior.sumarDias(365);
+    return f >= fechaCorteActual && f <= limiteSuperior;
+}

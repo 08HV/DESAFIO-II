@@ -11,13 +11,13 @@ Reservacion::Reservacion() {
     huesped = nullptr;
     metodoPago = "";
     fechaPago = Fecha();
-    monto = 0.0;
+    monto = 0;
     anotaciones = nullptr;
     setAnotaciones("");
     }
 Reservacion::Reservacion(int codigoReserva, Alojamiento* alojamiento, Huesped* huesped,
 const Fecha& fechaEntrada, int duracion, const string& metodoPago,
-const Fecha& fechaPago, float monto, const char* anotaciones)
+const Fecha& fechaPago,unsigned int monto, const char* anotaciones)
 {
     this->fechaEntrada = fechaEntrada;
     this->duracion = duracion;
@@ -83,7 +83,7 @@ const Fecha& Reservacion::getFechaEntrada() const {
 int Reservacion::getDuracion() const {
     return duracion;
 }
-float Reservacion::getMonto() const {
+unsigned int Reservacion::getMonto() const {
     return monto;
 }
 const string& Reservacion::getMetodoPago() const {
@@ -117,7 +117,7 @@ void Reservacion::setMetodoPago(const string& metodo) {
 void Reservacion::setFechaPago(const Fecha& fecha) {
     fechaPago = fecha;
 }
-void Reservacion::setMonto(float m) {
+void Reservacion::setMonto(unsigned int m) {
     monto = m;
 }
 void Reservacion::setAnotaciones(const char* anota) {

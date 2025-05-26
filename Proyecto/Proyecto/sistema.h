@@ -21,6 +21,7 @@ private:
     int cantidadReservaciones;
     int capacidadReservaciones;
     int ultimoCodigoReserva;
+    Fecha fechaCorteActual;
 
     Anfitrion** anfitriones;
     int cantidadAnfitriones;
@@ -32,6 +33,7 @@ public:
     Sistema();
     ~Sistema();
 
+    void gestionarFechaCorte();
     void cargarAlojamientos(const char* archivo);
     void cargarAnfitriones(const char* archivo);
     void cargarHuespedes(const char* archivo);
@@ -61,6 +63,8 @@ public:
 
     // Actualizar histórico (VI)
     void actualizarHistorico(const Fecha& fechaCorte);
+
+    bool fechaValida(const Fecha& f) const;
 
     // Funcionalidad (VII)
     void mostrarRecursos();
