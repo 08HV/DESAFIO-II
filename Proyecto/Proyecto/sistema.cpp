@@ -30,7 +30,7 @@ Sistema::Sistema() {
     reservaciones = new Reservacion*[capacidadReservaciones];
     for (int i = 0; i < capacidadReservaciones; ++i)
         reservaciones[i] = nullptr;
-    ultimoCodigoReserva = 1000;
+    ultimoCodigoReserva = 0;
 
     anfitriones = new Anfitrion*[ANFITRIONES];
     for (int i = 0; i < ANFITRIONES; ++i)
@@ -194,7 +194,9 @@ void Sistema::cargarReservacion(const char* archivo) {
         float monto = stof(extraerCampo(linea, posicion));
         string anotaciones = extraerCampo(linea, posicion);
 
-
+        if (codigoReserva > ultimoCodigoReserva) {
+            ultimoCodigoReserva = codigoReserva;
+        }
         cout << "Leyendo reserva: "
              << "CodigoReserva=" << codigoReserva
              << ", Alojamiento=" << codigoAlojamiento
@@ -464,7 +466,7 @@ void Sistema::buscarAlojamientosDisponibles(const Fecha& inicio, int noches, con
     }
 }
 int Sistema::generarCodigoReserva() {
-    return ultimoCodigoReserva++;
+    return ++ultimoCodigoReserva;
 }
 
 bool Sistema::huespedTieneReservaEnRango(Huesped* h, const Fecha& inicio, int noches) const {
