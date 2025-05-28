@@ -1,5 +1,6 @@
 #include "huesped.h"
 #include <iostream>
+#include "consumorecursos.h"
 using namespace std;
 
 Huesped::Huesped() {
@@ -26,8 +27,11 @@ Huesped::Huesped(const Huesped& copia) {
     capacidadReservas = copia.capacidadReservas;
     if (copia.codigosReservas && capacidadReservas > 0) {
         codigosReservas = new int[capacidadReservas];
-        for (int i = 0; i < cantidadReservas; ++i)
+        consumorecursos::sumarMemoria(sizeof(int) * capacidadReservas);
+        for (int i = 0; i < cantidadReservas; ++i){
+            consumorecursos::contarIteracion();
             codigosReservas[i] = copia.codigosReservas[i];
+        }
     } else {
         codigosReservas = nullptr;
     }
@@ -42,8 +46,11 @@ Huesped& Huesped::operator=(const Huesped& copia) {
         capacidadReservas = copia.capacidadReservas;
         if (copia.codigosReservas && capacidadReservas > 0) {
             codigosReservas = new int[capacidadReservas];
-            for (int i = 0; i < cantidadReservas; ++i)
+            consumorecursos::sumarMemoria(sizeof(int) * capacidadReservas);
+            for (int i = 0; i < cantidadReservas; ++i){
+                consumorecursos::contarIteracion();
                 codigosReservas[i] = copia.codigosReservas[i];
+            }
         } else {
             codigosReservas = nullptr;
         }
@@ -84,12 +91,16 @@ void Huesped::agregarCodigoReserva(int codigo) {
     if (capacidadReservas == 0) {
         capacidadReservas = 2;
         codigosReservas = new int[capacidadReservas];
+        consumorecursos::sumarMemoria(sizeof(int) * capacidadReservas);
     }
     if (cantidadReservas == capacidadReservas) {
         int nuevaCapacidad = capacidadReservas * 2;
         int* nuevoArr = new int[nuevaCapacidad];
-        for (int i = 0; i < cantidadReservas; ++i)
+        consumorecursos::sumarMemoria(sizeof(int) * nuevaCapacidad);
+        for (int i = 0; i < cantidadReservas; ++i){
+            consumorecursos::contarIteracion();
             nuevoArr[i] = codigosReservas[i];
+        }
         delete[] codigosReservas;
         codigosReservas = nuevoArr;
         capacidadReservas = nuevaCapacidad;
@@ -104,6 +115,7 @@ void Huesped::mostrarInfo() const {
     if (cantidadReservas > 0) {
         cout << "Códigos de reservas: ";
         for (int i = 0; i < cantidadReservas; ++i) {
+            consumorecursos::contarIteracion();
             cout << codigosReservas[i];
             if (i < cantidadReservas - 1) cout << ", ";
         }

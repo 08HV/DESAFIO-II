@@ -1,6 +1,8 @@
 #include "alojamiento.h"
 #include <cstring>
 #include <iostream>
+#include "consumorecursos.h"
+
 
 
 using namespace std;
@@ -37,6 +39,7 @@ Alojamiento::Alojamiento(const string& nombre, int codigoID, Anfitrion* anfitrio
     this->precio = precio;
 
     for (int i = 0; i < 10; i++) {
+        consumorecursos::contarIteracion();
         this->amenidades[i] = amenidades[i];
     }
     cantidadReservasFutu = 0;
@@ -134,6 +137,7 @@ void Alojamiento::mostrarInfo(ostream& salida ) const {
     cout << "Amenidades: ";
     bool primero=true;
     for (int i = 0; i < 10; i++) {
+        consumorecursos::contarIteracion();
         if (!amenidades[i].empty()) {
             if (!primero) salida << ", ";
             salida << amenidades[i];
@@ -145,6 +149,7 @@ void Alojamiento::mostrarInfo(ostream& salida ) const {
     if (cantidadReservasFutu > 0) {
         salida << "Fechas reservadas: ";
         for (int i = 0; i < cantidadReservasFutu; ++i) {
+            consumorecursos::contarIteracion();
             reservasFuturas[i].mostrarFecha(salida);
             if (i != cantidadReservasFutu - 1) salida << ", ";
         }
@@ -155,7 +160,9 @@ void Alojamiento::mostrarInfo(ostream& salida ) const {
 bool Alojamiento::estaDisponible(const Fecha& inicio, int noches) const {
     Fecha dia = inicio;
     for (int n = 0; n < noches; ++n) {
+        consumorecursos::contarIteracion();
         for (int r = 0; r < cantidadReservasFutu; ++r) {
+            consumorecursos::contarIteracion();
             if (reservasFuturas[r] == dia) {
                 return false;
             }

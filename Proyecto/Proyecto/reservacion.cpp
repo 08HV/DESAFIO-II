@@ -2,6 +2,7 @@
 #include "iostream"
 #include <cstring>
 #include <algorithm>
+#include "consumorecursos.h"
 
 Reservacion::Reservacion() {
     fechaEntrada = Fecha();
@@ -125,10 +126,12 @@ void Reservacion::setAnotaciones(const char* anota) {
     if (anota) {
         size_t len = min(strlen(anota), size_t(1000));
         anotaciones = new char[len + 1];
+        consumorecursos::sumarMemoria(sizeof(char) * (len + 1));
         strncpy(anotaciones, anota, len);
         anotaciones[len] = '\0';
     } else {
         anotaciones = new char[1];
+        consumorecursos::sumarMemoria(sizeof(char));
         anotaciones[0] = '\0';
     }
 }

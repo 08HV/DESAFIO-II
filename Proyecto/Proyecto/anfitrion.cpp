@@ -1,6 +1,7 @@
 #include "Anfitrion.h"
 #include <iostream>
 #include <cstring>
+#include "consumorecursos.h"
 using namespace std;
 Anfitrion::Anfitrion() {
     documento = 0;
@@ -27,8 +28,11 @@ Anfitrion::Anfitrion(const Anfitrion& copia) {
     capacidadAlojamientos = copia.capacidadAlojamientos;
     if (copia.codigosAlojamientos && capacidadAlojamientos > 0) {
         codigosAlojamientos = new int[capacidadAlojamientos];
-        for (int i = 0; i < cantidadAlojamientos; ++i)
+        consumorecursos::sumarMemoria(sizeof(int) * capacidadAlojamientos);
+        for (int i = 0; i < cantidadAlojamientos; ++i){
+            consumorecursos::contarIteracion();
             codigosAlojamientos[i] = copia.codigosAlojamientos[i];
+        }
     } else {
         codigosAlojamientos = nullptr;
     }
@@ -44,8 +48,11 @@ Anfitrion& Anfitrion::operator=(const Anfitrion& copia) {
         capacidadAlojamientos = copia.capacidadAlojamientos;
         if (copia.codigosAlojamientos && capacidadAlojamientos > 0) {
             codigosAlojamientos = new int[capacidadAlojamientos];
-            for (int i = 0; i < cantidadAlojamientos; ++i)
+            consumorecursos::sumarMemoria(sizeof(int) * capacidadAlojamientos);
+            for (int i = 0; i < cantidadAlojamientos; ++i){
+                consumorecursos::contarIteracion();
                 codigosAlojamientos[i] = copia.codigosAlojamientos[i];
+            }
         } else {
             codigosAlojamientos = nullptr;
         }
@@ -86,12 +93,16 @@ void Anfitrion::agregarCodigoAlojamiento(int codigo) {
     if (capacidadAlojamientos == 0) {
         capacidadAlojamientos = 1;
         codigosAlojamientos = new int[capacidadAlojamientos];
+        consumorecursos::sumarMemoria(sizeof(int) * capacidadAlojamientos);
     }
     if (cantidadAlojamientos == capacidadAlojamientos) {
         int nuevaCapacidad = capacidadAlojamientos * 2;
         int* nuevoArr = new int[nuevaCapacidad];
-        for (int i = 0; i < cantidadAlojamientos; ++i)
+        consumorecursos::sumarMemoria(sizeof(int) * nuevaCapacidad);
+        for (int i = 0; i < cantidadAlojamientos; ++i){
+            consumorecursos::contarIteracion();
             nuevoArr[i] = codigosAlojamientos[i];
+        }
         delete[] codigosAlojamientos;
         codigosAlojamientos = nuevoArr;
         capacidadAlojamientos = nuevaCapacidad;
@@ -107,6 +118,7 @@ salida << "Documento: " << documento << "\n"
     if (cantidadAlojamientos > 0) {
         salida << "Alojamientos: ";
         for (int i = 0; i < cantidadAlojamientos; ++i) {
+            consumorecursos::contarIteracion();
             salida << codigosAlojamientos[i];
             if (i < cantidadAlojamientos - 1) salida << ", ";
         }

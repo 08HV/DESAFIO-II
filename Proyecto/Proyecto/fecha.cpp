@@ -2,6 +2,7 @@
 #include "fecha.h"
 #include <string>
 #include <limits>
+#include "consumorecursos.h"
 
 
 Fecha::Fecha() {
@@ -50,6 +51,7 @@ bool Fecha::operator>=(const Fecha& comparar) const {
 
 void Fecha::sumarDias(int dias) {
     while (dias > 0) {
+        consumorecursos::contarIteracion();
         int dim = diasEnMes(mes, año);
         if (dia + dias <= dim) {
             dia += dias;
@@ -132,6 +134,7 @@ Fecha Fecha::fechaDeCorte() {
     cout << "Ingrese la fecha de corte (dd mm aaaa): ";
     int d, m, a;
     while (true) {
+        consumorecursos::contarIteracion();
         cin >> d >> m >> a;
         if (a > 0 && m >= 1 && m <= 12 && d >= 1 && d <= diasEnMes(m, a))
             break;
@@ -144,6 +147,7 @@ Fecha Fecha::fechaDeCorte() {
 void Fecha::ingresarFecha() {
     int d, m, a;
     while (true) {
+        consumorecursos::contarIteracion();
         cout << "Ingrese la fecha (dd mm aaaa): ";
         cin >> d >> m >> a;
         if (cin.fail() || a < 1 || m < 1 || m >= 13 || d < 1 || d > diasEnMes(m, a)) {

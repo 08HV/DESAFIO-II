@@ -4,6 +4,8 @@
 #include <cctype>
 #include <fstream>
 #include <string>
+#include "consumorecursos.h"
+
 using namespace std;
 const int HUESPEDES = 100;
 const int MANFITRIONES = 100;
@@ -12,6 +14,7 @@ const int ALOJAMIENTOS = 100;
 bool iguales(const string& a, const string& b) {
     if (a.length() != b.length()) return false;
     for (size_t i = 0; i < a.length(); ++i) {
+        consumorecursos::contarIteracion();
         if (tolower(static_cast<unsigned char>(a[i])) != tolower(static_cast<unsigned char>(b[i])))
             return false;
     }
@@ -22,29 +25,41 @@ bool iguales(const string& a, const string& b) {
 Sistema::Sistema() {
     cantidadAlojamientos = 0;
     alojamientos = new Alojamiento*[ALOJAMIENTOS];
-    for (int i = 0; i < ALOJAMIENTOS; ++i)
+    consumorecursos::sumarMemoria(sizeof(Alojamiento*) * ALOJAMIENTOS);
+    for (int i = 0; i < ALOJAMIENTOS; ++i){
+        consumorecursos::contarIteracion();
         alojamientos[i] = nullptr;
-
+    }
     capacidadReservaciones = 100;
     cantidadReservaciones = 0;
     reservaciones = new Reservacion*[capacidadReservaciones];
-    for (int i = 0; i < capacidadReservaciones; ++i)
+    consumorecursos::sumarMemoria(sizeof(Reservacion*) * capacidadReservaciones);
+    for (int i = 0; i < capacidadReservaciones; ++i){
+        consumorecursos::contarIteracion();
         reservaciones[i] = nullptr;
+    }
     ultimoCodigoReserva = 0;
-    void gestionarFechaCorte();
+    gestionarFechaCorte();
 
     anfitriones = new Anfitrion*[ANFITRIONES];
-    for (int i = 0; i < ANFITRIONES; ++i)
+    consumorecursos::sumarMemoria(sizeof(Anfitrion*) * ANFITRIONES);
+    for (int i = 0; i < ANFITRIONES; ++i){
+        consumorecursos::contarIteracion();
         anfitriones[i] = nullptr;
+    }
     cantidadAnfitriones = 0;
 
     cantidadHuespedes = 0;
     huespedes = new Huesped*[HUESPEDES];
-     for (int i = 0; i < HUESPEDES; ++i)
+    consumorecursos::sumarMemoria(sizeof(Huesped*) * HUESPEDES);
+    for (int i = 0; i < HUESPEDES; ++i){
+        consumorecursos::contarIteracion();
         huespedes[i] = nullptr;
+    }
 }
 Sistema::~Sistema() {
     for (int i = 0; i < cantidadAlojamientos; i++) {
+        consumorecursos::contarIteracion();
         if (alojamientos[i] != nullptr){
             delete alojamientos[i];
             alojamientos[i] = nullptr;
@@ -54,6 +69,7 @@ Sistema::~Sistema() {
     alojamientos = nullptr;
 
     for (int i = 0; i < cantidadReservaciones; i++) {
+        consumorecursos::contarIteracion();
         if (reservaciones[i] != nullptr) {
             delete reservaciones[i];
             reservaciones[i] = nullptr;
@@ -63,6 +79,7 @@ Sistema::~Sistema() {
     reservaciones = nullptr;
 
     for (int i = 0; i < cantidadAnfitriones; i++) {
+        consumorecursos::contarIteracion();
         if (anfitriones[i] != nullptr) {
             delete anfitriones[i];
             anfitriones[i] = nullptr;
@@ -72,6 +89,7 @@ Sistema::~Sistema() {
     anfitriones = nullptr;
 
     for (int i = 0; i < cantidadHuespedes; i++) {
+        consumorecursos::contarIteracion();
         if (huespedes[i] != nullptr) {
             delete huespedes[i];
             huespedes[i] = nullptr;
@@ -102,6 +120,7 @@ void Sistema::cargarAlojamientos(const char* archivo){
     }
     string linea;
     while (getline(in, linea)) {
+        consumorecursos::contarIteracion();
         if (linea.empty()) continue;
         size_t posicion = 0;
         int codigoID = stoi(extraerCampo(linea, posicion));
@@ -114,12 +133,14 @@ void Sistema::cargarAlojamientos(const char* archivo){
         int precio = stoi(extraerCampo(linea, posicion));
         string amenidades[10];
         for (int i = 0; i < 10; ++i) {
+            consumorecursos::contarIteracion();
             amenidades[i] = extraerCampo(linea, posicion);
         }
         Anfitrion* anfitrion = buscarAnfitrion(documentoAnfitrion);
         alojamientos[cantidadAlojamientos++] = new Alojamiento(
             nombre, codigoID, anfitrion, departamento, municipio, tipo, direccion, precio, amenidades
             );
+        consumorecursos::sumarMemoria(sizeof(Alojamiento));
     }
 }
 
@@ -131,14 +152,17 @@ void Sistema::cargarAnfitriones(const char* archivo) {
     }
     string linea;
     while (getline(in, linea)) {
+        consumorecursos::contarIteracion();
         if (linea.empty()) continue;
         size_t posicion = 0;
         int documento = stoi(extraerCampo(linea, posicion));
         int antiguedad = stoi(extraerCampo(linea, posicion));
         float puntuacion = stof(extraerCampo(linea, posicion));
         Anfitrion* anfitrion = new Anfitrion(documento, antiguedad, puntuacion);
+        consumorecursos::sumarMemoria(sizeof(Anfitrion));
 
         while (posicion < linea.size()) {
+            consumorecursos::contarIteracion();
             string campo = extraerCampo(linea, posicion);
             if (!campo.empty())
                 anfitrion->agregarCodigoAlojamiento(stoi(campo));
@@ -155,6 +179,7 @@ void Sistema::cargarHuespedes(const char* archivo) {
     }
     string linea;
     while (getline(in, linea)) {
+        consumorecursos::contarIteracion();
         if (linea.empty()) continue;
         size_t posicion = 0;
         int documento = stoi(extraerCampo(linea, posicion));
@@ -163,6 +188,7 @@ void Sistema::cargarHuespedes(const char* archivo) {
         Huesped* huesped = new Huesped(documento, antiguedad, puntuacion);
 
         while (posicion < linea.size()) {
+            consumorecursos::contarIteracion();
             string campo = extraerCampo(linea, posicion);
             if (!campo.empty())
                 huesped->agregarCodigoReserva(stoi(campo));
@@ -179,6 +205,7 @@ void Sistema::cargarReservacion(const char* archivo) {
     }
     string linea;
     while (getline(in, linea)) {
+        consumorecursos::contarIteracion();
         if (linea.empty()) continue;
         size_t posicion = 0;
         int codigoReserva = stoi(extraerCampo(linea, posicion));
@@ -211,6 +238,7 @@ void Sistema::cargarReservacion(const char* archivo) {
         reservaciones[cantidadReservaciones++] = new Reservacion(
             codigoReserva, alojamiento, huesped, fechaEntrada, duracion, metodoPago, fechaPago, monto, anotaciones.c_str()
         );
+        consumorecursos::sumarMemoria(sizeof(Reservacion));
     }
 }
 void Sistema::guardarReservas(const char* archivo) {
@@ -220,6 +248,7 @@ void Sistema::guardarReservas(const char* archivo) {
         return;
     }
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
 
         if (r == nullptr) {
@@ -294,6 +323,7 @@ bool Sistema::Ingreso() {
 void Sistema::mostrarReservasDeHuesped(Huesped* h) const {
     bool hay = false;
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
         if (r->getHuesped() == h) {
             cout << "Reserva #" << r->getCodigoReserva() << endl;
@@ -314,6 +344,7 @@ void Sistema::mostrarReservasDeHuesped(Huesped* h) const {
 void Sistema::menuPrincipalAnfitrion(Anfitrion* a) {
     int opcion = 0;
     while (opcion != 5) {
+        consumorecursos::contarIteracion();
         cout << "\n--- MENÚ ANFITRIÓN ---" << endl;
         cout << "1. Mostrar mis alojamientos\n";
         cout << "2. Consultar reservaciones activas por rango de fecha\n";
@@ -326,6 +357,7 @@ void Sistema::menuPrincipalAnfitrion(Anfitrion* a) {
             // Mostrar alojamientos del anfitrión
             bool encontrado = false;
             for (int i = 0; i < cantidadAlojamientos; ++i) {
+                consumorecursos::contarIteracion();
                 if (alojamientos[i]->getAnfitrion() == a) {
                     alojamientos[i]->mostrarInfo();
                     cout << "-------------------------" << endl;
@@ -365,6 +397,7 @@ void Sistema::menuPrincipalAnfitrion(Anfitrion* a) {
 void Sistema::menuPrincipalHuesped(Huesped* h) {
     int opcion = 0;
     while (opcion != 5) {
+        consumorecursos::contarIteracion();
         cout << "\n--- MENÚ HUÉSPED ---" << endl;
         cout << "1. Información de mis reservas\n";
         cout << "2. Buscar y reservar alojamiento (por filtros)\n";
@@ -410,6 +443,7 @@ void Sistema::menuPrincipalHuesped(Huesped* h) {
 
 Alojamiento* Sistema::buscarAlojamiento(int codigo) const {
     for (int i = 0; i < cantidadAlojamientos; i++) {
+        consumorecursos::contarIteracion();
         if (alojamientos[i]->getCodigoID() == codigo) {
             return alojamientos[i];
         }
@@ -419,6 +453,7 @@ Alojamiento* Sistema::buscarAlojamiento(int codigo) const {
 
 Reservacion* Sistema::buscarReservacion(int codigo) const {
     for (int i = 0; i < cantidadReservaciones; i++) {
+        consumorecursos::contarIteracion();
         if (reservaciones[i]->getCodigoReserva() == codigo) {
             return reservaciones[i];
         }
@@ -427,6 +462,7 @@ Reservacion* Sistema::buscarReservacion(int codigo) const {
 }
 Anfitrion* Sistema::buscarAnfitrion(int documento) const {
     for (int i = 0; i < cantidadAnfitriones; ++i) {
+        consumorecursos::contarIteracion();
         if (anfitriones[i]->getDocumento() == documento) {
             return anfitriones[i];
         }
@@ -435,6 +471,7 @@ Anfitrion* Sistema::buscarAnfitrion(int documento) const {
 }
 Huesped* Sistema::buscarHuesped(int documento) const {
     for (int i = 0; i < cantidadHuespedes; ++i) {
+        consumorecursos::contarIteracion();
         if (huespedes[i]->getDocumento() == documento) {
             return huespedes[i];
         }
@@ -445,6 +482,7 @@ Huesped* Sistema::buscarHuesped(int documento) const {
 void Sistema::buscarAlojamientosDisponibles(const Fecha& inicio, int noches, const string& municipio, int costoMax, float puntuacionMin) const {
     bool encontrado = false;
     for (int i = 0; i < cantidadAlojamientos; i++) {
+        consumorecursos::contarIteracion();
         Alojamiento* al = alojamientos[i];
 
         if (!iguales(al->getMunicipio(), municipio))
@@ -474,6 +512,7 @@ int Sistema::generarCodigoReserva() {
 
 bool Sistema::huespedTieneReservaEnRango(Huesped* h, const Fecha& inicio, int noches) const {
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
         if (r->getHuesped() == h && r->secruza(inicio, noches)) {
             return true;
@@ -484,6 +523,7 @@ bool Sistema::huespedTieneReservaEnRango(Huesped* h, const Fecha& inicio, int no
 
 bool Sistema::alojamientoDisponible(Alojamiento* a, const Fecha& inicio, int noches) const {
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
         if (r->getAlojamiento() == a && r->secruza(inicio, noches)) {
             return false;
@@ -533,7 +573,7 @@ bool Sistema::registrarReservacionPorCodigo(Huesped* huesped, int codigoAlojamie
         monto,
         anotaciones
         );
-
+    consumorecursos::sumarMemoria(sizeof(Reservacion));
     agregarReservacion(reserva);
     reserva->mostrarComprobante();
     return true;
@@ -557,6 +597,7 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
     }else{
         string respu;
         while (true) {
+            consumorecursos::contarIteracion();
             cout << "¿Desea filtrar por costo máximo por noche? (si/no): ";
             cin >> respu;
             for (auto &c : respu) c = tolower(c);
@@ -572,6 +613,7 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
             }
         }
         while (true) {
+            consumorecursos::contarIteracion();
             cout << "¿Desea filtrar por puntuación mínima de anfitrión? (si/no): ";
             cin >> respu;
             for (auto &c : respu) c = tolower(c);
@@ -593,6 +635,7 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
         int totalDisponibles = 0;
 
         for (int i = 0; i < cantidadAlojamientos; ++i) {
+            consumorecursos::contarIteracion();
             if (alojamientos[i]->esDelMunicipio(municipio) &&
                 alojamientos[i]->estaDisponible(fechaEntrada, noches) &&
                 (costoMax < 0 || alojamientos[i]->getCostoPorNoche() <= costoMax) &&
@@ -606,11 +649,13 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
         }
         cout << "\nAlojamientos disponibles:\n";
         for (int i = 0; i < totalDisponibles; ++i) {
+            consumorecursos::contarIteracion();
             cout << "Código: " << disponibles[i]->getCodigo() << endl;
             disponibles[i]->mostrarInfo();
             cout << "----------------------\n";
         }
         while (true) {
+            consumorecursos::contarIteracion();
             cout << "¿Desea registrar una reservación? (si/no): ";
             cin >> respu;
 
@@ -629,6 +674,7 @@ bool Sistema::registrarReservacionPorBusqueda(Huesped* huesped) {
         cin >> codigoAlojamiento;
         bool encontrado = false;
         for (int i = 0; i < totalDisponibles; ++i) {
+            consumorecursos::contarIteracion();
             if (disponibles[i]->getCodigo() == codigoAlojamiento) {
                 encontrado = true;
                 break;
@@ -647,6 +693,7 @@ void Sistema::anularReservacion() {
     cin >> codigo;
     int indice = -1;
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         if (reservaciones[i]->getCodigoReserva() == codigo) {
             indice = i;
             break;
@@ -659,6 +706,7 @@ void Sistema::anularReservacion() {
     delete reservaciones[indice];
 
     for (int j = indice; j < cantidadReservaciones - 1; ++j) {
+        consumorecursos::contarIteracion();
         reservaciones[j] = reservaciones[j + 1];
     }
     reservaciones[cantidadReservaciones - 1] = nullptr;
@@ -670,7 +718,9 @@ void Sistema::agregarReservacion(Reservacion* reservacion) {
     if (cantidadReservaciones == capacidadReservaciones) {
         int nuevaCapacidad = capacidadReservaciones * 2;
         Reservacion** nuevo = new Reservacion*[nuevaCapacidad];
+        consumorecursos::sumarMemoria(sizeof(Reservacion*) * nuevaCapacidad);
         for (int i = 0; i < cantidadReservaciones; ++i) {
+            consumorecursos::contarIteracion();
             nuevo[i] = reservaciones[i];
         }
         delete[] reservaciones;
@@ -683,6 +733,7 @@ void Sistema::agregarReservacion(Reservacion* reservacion) {
 void Sistema::consultarReservacionesAnfitrion(Anfitrion* anfitrion, const Fecha& desde, const Fecha& hasta) const {
     bool encontrado = false;
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
         Alojamiento* al = r->getAlojamiento();
         if (al->getAnfitrion() == anfitrion) {
@@ -720,6 +771,7 @@ void Sistema::actualizarHistorico(const Fecha& fechaCorte) {
 
     int nuevoCount = 0;
     for (int i = 0; i < cantidadReservaciones; ++i) {
+        consumorecursos::contarIteracion();
         Reservacion* r = reservaciones[i];
         if (reservacionAntesDeCorte(r, fechaCorte)) {
             historico << r->getCodigoReserva() << ' '

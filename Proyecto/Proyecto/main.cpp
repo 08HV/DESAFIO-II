@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Sistema.h"
+#include "consumorecursos.h"
 
 using namespace std;
 
@@ -10,6 +11,7 @@ int main() {
 
     bool continuar = true;
     while (continuar) {
+        consumorecursos::contarIteracion();
         cout << "\n=== Sistema  ===\n";
         cout << "1. Ingresar al sistema\n";
         cout << "2. Salir\n";
@@ -27,6 +29,7 @@ int main() {
     }
 
     sistema.guardarDatos();
+    consumorecursos::mostrar();
 
     return 0;
 }
