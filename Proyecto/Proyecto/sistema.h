@@ -66,8 +66,6 @@ public:
 
     bool fechaValida(const Fecha& f) const;
 
-    // Funcionalidad (VII)
-    void mostrarRecursos();
 };
 
 #endif // SISTEMA_H
